@@ -6,10 +6,32 @@
     <link rel="stylesheet" href="styles/styles.css" />
     <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
     <title>Tienda de Zapatillas Felipe Sneakers</title>
+    <style>
+        /* Estilos inline para asegurar que carguen rápido */
+        .home__img, .collection__img {
+            max-width: 100%;
+            height: auto;
+        }
+        .home__img {
+            max-height: 400px;
+        }
+        .collection__img {
+            max-height: 280px;
+        }
+        @media (max-width: 768px) {
+            .home__img {
+                max-height: 300px;
+            }
+            .collection__img {
+                max-height: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!--===== BOTÓN WHATSAPP FLOTANTE =====-->
-    <a href="https://wa.me/573205769399?text=Hola,%20estoy%20interesado%20en%20sus%20zapatillas%20Felipe" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/573205769399?text=Hola,%20estoy%20interesado%20en%20sus%20zapatillas%20Felipe" 
+       class="whatsapp-float" target="_blank" title="Consultar por WhatsApp">
         <i class='bx bxl-whatsapp'></i>
     </a>
 
@@ -33,10 +55,11 @@
                     </li>
                 </ul>
             </div>
-            <div class="nav__shop">
+            <!-- REMOVED: Carrito no necesario en catálogo -->
+            <!-- <div class="nav__shop">
                 <i class="bx bx-shopping-bag"></i>
                 <span class="nav__cart-count">0</span>
-            </div>
+            </div> -->
         </nav>
     </header>
 
@@ -46,13 +69,20 @@
             <div class="home__container bd-grid">
                 <div class="home__sneaker">
                     <div class="home__shape"></div>
-                    <img src="images/imghome.png" alt="Yeezy Boot SPLY-350" class="home__img" id="home-product-img" />
+                    <img src="images/imghome.png" alt="Yeezy Boot SPLY-350" 
+                         class="home__img" id="home-product-img" 
+                         loading="lazy" />
                 </div>
                 <div class="home__data">
                     <span class="home__new" id="home-product-badge">Nuevo</span>
                     <h1 class="home__title" id="home-product-title">YEEZY BOOT <br>SPLY - 350</h1>
-                    <p class="home__description" id="home-product-desc">Explora la nueva colección de zapatillas exclusivas</p>
-                    <a href="https://wa.me/573205769399?text=Hola,%20estoy%20interesado%20en%20las%20YEEZY%20BOOT%20SPLY-350" class="button" target="_blank" id="home-product-link">Comprar por WhatsApp</a>
+                    <p class="home__description" id="home-product-desc">
+                        Descubre nuestra colección exclusiva de zapatillas premium
+                    </p>
+                    <a href="https://wa.me/573205769399?text=Hola,%20estoy%20interesado%20en%20las%20YEEZY%20BOOT%20SPLY-350" 
+                       class="button" target="_blank" id="home-product-link" title="Consultar por WhatsApp">
+                        Consultar Disponibilidad
+                    </a>
                 </div>
             </div>
         </section>
@@ -69,7 +99,7 @@
         <section class="featured section" id="nike-section">
             <div class="section-header">
                 <h2 class="section-title">COLECCIÓN NIKE</h2>
-                <a href="nike.html" class="view-all-link">
+                <a href="nike.html" class="view-all-link" title="Ver toda la colección Nike">
                     Ver todos <i class='bx bx-right-arrow-alt'></i>
                 </a>
             </div>
@@ -82,7 +112,7 @@
         <section class="featured section" id="adidas-section">
             <div class="section-header">
                 <h2 class="section-title">COLECCIÓN ADIDAS</h2>
-                <a href="adidas.html" class="view-all-link">
+                <a href="adidas.html" class="view-all-link" title="Ver toda la colección Adidas">
                     Ver todos <i class='bx bx-right-arrow-alt'></i>
                 </a>
             </div>
@@ -97,20 +127,30 @@
             <div class="collection__container bd-grid">
                 <div class="collection__card">
                     <div class="collection__data">
-                        <h3 class="collection__name">Hombres</h3>
-                        <p class="collection__description">Encuentra el estilo perfecto para cada ocasión</p>
-                        <a href="hombres.html" class="button-light">Ver Colección <i class="bx bx-right-arrow-alt button-icon"></i></a>
+                        <h3 class="collection__name">Para Hombres</h3>
+                        <p class="collection__description">
+                            Estilo, confort y diseño para cada ocasión
+                        </p>
+                        <a href="hombres.html" class="button-light" title="Ver colección para hombres">
+                            Ver Colección <i class="bx bx-right-arrow-alt button-icon"></i>
+                        </a>
                     </div>
-                    <img src="images/collection1.png" alt="Colección Hombres" class="collection__img" />
+                    <img src="images/collection1.png" alt="Colección para hombres - Zapatillas deportivas" 
+                         class="collection__img" loading="lazy" />
                 </div>
 
                 <div class="collection__card">
                     <div class="collection__data">
-                        <h3 class="collection__name">Mujeres</h3>
-                        <p class="collection__description">Estilo, comodidad y diseño en cada paso</p>
-                        <a href="mujeres.html" class="button-light">Ver Colección <i class="bx bx-right-arrow-alt button-icon"></i></a>
+                        <h3 class="collection__name">Para Mujeres</h3>
+                        <p class="collection__description">
+                            Elegancia, comodidad y tendencia en cada paso
+                        </p>
+                        <a href="mujeres.html" class="button-light" title="Ver colección para mujeres">
+                            Ver Colección <i class="bx bx-right-arrow-alt button-icon"></i>
+                        </a>
                     </div>
-                    <img src="images/collection2.png" alt="Colección Mujeres" class="collection__img" />
+                    <img src="images/collection2.png" alt="Colección para mujeres - Zapatillas casuales" 
+                         class="collection__img" loading="lazy" />
                 </div>
             </div>
         </section>
@@ -119,11 +159,14 @@
         <section class="newsletter section">
             <div class="newsletter__container bd-grid">
                 <div>
-                    <h3 class="newsletter__title">Suscríbete y Obtén <br>10% DE DESCUENTO</h3>
-                    <p class="newsletter__description">Obtén 10% de descuento en todos los productos y sé el primero en conocer nuevos lanzamientos</p>
+                    <h3 class="newsletter__title">Suscríbete a Nuestro Newsletter</h3>
+                    <p class="newsletter__description">
+                        Sé el primero en conocer nuevos lanzamientos y ofertas exclusivas
+                    </p>
                 </div>
                 <form class="newsletter__subscribe" id="newsletter-form">
-                    <input type="email" placeholder="tu@correo.com" class="newsletter__input" id="newsletter-email" required />
+                    <input type="email" placeholder="Ingresa tu email" 
+                           class="newsletter__input" id="newsletter-email" required />
                     <button type="submit" class="newsletter__button">Suscribirse</button>
                 </form>
             </div>
@@ -135,39 +178,75 @@
         <div class="footer__container bd-grid">
             <div class="footer__box">
                 <h3 class="footer__title">Felipe Sneakers</h3>
-                <p class="footer__description">Tu tienda de confianza para las mejores zapatillas deportivas y casuales en Colombia</p>
+                <p class="footer__description">
+                    Tu tienda de confianza para zapatillas premium en Colombia
+                </p>
+                <div class="footer__socials" style="margin-top: 1rem;">
+                    <a href="https://facebook.com/felipesneakers" class="footer__social" target="_blank" title="Facebook">
+                        <i class="bx bxl-facebook"></i>
+                    </a>
+                    <a href="https://instagram.com/felipesneakers" class="footer__social" target="_blank" title="Instagram">
+                        <i class="bx bxl-instagram"></i>
+                    </a>
+                    <a href="https://tiktok.com/@felipesneakers" class="footer__social" target="_blank" title="TikTok">
+                        <i class="bx bxl-tiktok"></i>
+                    </a>
+                    <a href="https://wa.me/573205769399" class="footer__social" target="_blank" title="WhatsApp">
+                        <i class="bx bxl-whatsapp"></i>
+                    </a>
+                </div>
             </div>
 
             <div class="footer__box">
                 <h3 class="footer__title">COLECCIONES</h3>
                 <ul>
-                    <li><a href="hombres.html" class="footer__link">Hombres</a></li>
-                    <li><a href="mujeres.html" class="footer__link">Mujeres</a></li>
-                    <li><a href="nike.html" class="footer__link">Nike</a></li>
-                    <li><a href="adidas.html" class="footer__link">Adidas</a></li>
+                    <li><a href="hombres.html" class="footer__link" title="Zapatillas para hombres">Hombres</a></li>
+                    <li><a href="mujeres.html" class="footer__link" title="Zapatillas para mujeres">Mujeres</a></li>
+                    <li><a href="nike.html" class="footer__link" title="Colección Nike">Nike</a></li>
+                    <li><a href="adidas.html" class="footer__link" title="Colección Adidas">Adidas</a></li>
+                    <li><a href="#featured" class="footer__link" title="Productos destacados">Destacados</a></li>
                 </ul>
             </div>
 
             <div class="footer__box">
                 <h3 class="footer__title">CONTACTO</h3>
                 <ul>
-                    <li><a href="https://wa.me/573205769399" class="footer__link" target="_blank"><i class='bx bxl-whatsapp'></i> +57 320 576 9399</a></li>
-                    <li><a href="tel:+573205769399" class="footer__link"><i class='bx bx-phone'></i> Llamar ahora</a></li>
-                    <li><a href="mailto:ventas@felipesneakers.com" class="footer__link"><i class='bx bx-envelope'></i> ventas@felipesneakers.com</a></li>
+                    <li>
+                        <a href="https://wa.me/573205769399" class="footer__link" target="_blank" title="Escribir por WhatsApp">
+                            <i class='bx bxl-whatsapp'></i> WhatsApp: +57 320 576 9399
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:+573205769399" class="footer__link" title="Llamar por teléfono">
+                            <i class='bx bx-phone'></i> Llamar ahora
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:ventas@felipesneakers.com" class="footer__link" title="Enviar email">
+                            <i class='bx bx-envelope'></i> ventas@felipesneakers.com
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://maps.google.com/?q=Cali,Colombia" class="footer__link" target="_blank" title="Ver ubicación">
+                            <i class='bx bx-map'></i> Cali, Colombia
+                        </a>
+                    </li>
                 </ul>
             </div>
 
             <div class="footer__box">
-                <h3 class="footer__title">SÍGUENOS</h3>
-                <div class="footer__socials">
-                    <a href="https://facebook.com/felipesneakers" class="footer__social" target="_blank"><i class="bx bxl-facebook"></i></a>
-                    <a href="https://instagram.com/felipesneakers" class="footer__social" target="_blank"><i class="bx bxl-instagram"></i></a>
-                    <a href="https://tiktok.com/@felipesneakers" class="footer__social" target="_blank"><i class="bx bxl-tiktok"></i></a>
-                    <a href="https://wa.me/573205769399" class="footer__social" target="_blank"><i class="bx bxl-whatsapp"></i></a>
-                </div>
+                <h3 class="footer__title">HORARIOS</h3>
+                <ul>
+                    <li class="footer__link"><i class='bx bx-time'></i> Lunes a Viernes: 9AM - 7PM</li>
+                    <li class="footer__link"><i class='bx bx-time'></i> Sábados: 10AM - 5PM</li>
+                    <li class="footer__link"><i class='bx bx-time'></i> Domingos: Cerrado</li>
+                </ul>
             </div>
         </div>
-        <p class="footer__copy">&#169; 2024 Felipe Sneakers. Todos los derechos reservados | Cali, Colombia</p>
+        <p class="footer__copy">
+            &#169; 2024 Felipe Sneakers. Todos los derechos reservados | Cali, Colombia
+            <br><small>Sitio web: catálogo informativo - Consulta disponibilidad y precios</small>
+        </p>
     </footer>
 
     <script src="js/main.js"></script>
