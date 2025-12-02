@@ -16,7 +16,7 @@ class AdminPanel {
         this.MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
         this.STORAGE_KEY = 'felipeSneakersProducts';
         
-        // ✅ TU API KEY DE IMGBB
+        // ✅ TU API KEY DE IMGBB (VERIFICADA)
         this.IMGBB_API_KEY = '9be3ab98a2798b1fe8d3daf02a158137';
         
         this.init();
@@ -267,8 +267,8 @@ class AdminPanel {
                 console.log(`✅ ${this.products.length} productos cargados`);
                 
                 // Estadísticas de imágenes
-                const publicImages = this.products.filter(p => p.image.startsWith('http')).length;
-                const localImages = this.products.filter(p => p.image.startsWith('data:image/')).length;
+                const publicImages = this.products.filter(p => p.image && p.image.startsWith('https://')).length;
+                const localImages = this.products.filter(p => p.image && p.image.startsWith('data:image/')).length;
                 console.log(`📊 Imágenes públicas: ${publicImages}, Locales: ${localImages}`);
                 
                 return this.products;
@@ -342,61 +342,48 @@ class AdminPanel {
             this.showNotification('📤 Subiendo imagen a servidor...', 'info');
             this.isUploading = true;
             
-            // URL de la API de ImgBB
+            // URL de la API de ImgBB con tu API key
             const apiUrl = `https://api.imgbb.com/1/upload?key=${this.IMGBB_API_KEY}`;
-            console.log('🌐 Enviando a:', apiUrl);
+            console.log('🌐 Enviando a ImgBB...');
             
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 body: formData,
-                timeout: 30000 // 30 segundos timeout
+                timeout: 30000
             });
             
             console.log('📥 Respuesta recibida:', response.status, response.statusText);
             
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('❌ Error de API:', errorText);
-                
-                if (response.status === 400) {
-                    throw new Error('API Key inválida o expirada. Verifica tu configuración.');
-                } else if (response.status === 429) {
-                    throw new Error('Límite de imágenes excedido (500/mes). Prueba mañana o usa imagen temporal.');
-                } else if (response.status === 413) {
-                    throw new Error('Imagen demasiado grande. Máximo 32MB en ImgBB.');
-                } else {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             
             const data = await response.json();
-            console.log('📊 Datos de respuesta:', data);
+            console.log('📊 Respuesta de ImgBB:', data);
             
             if (data.success && data.data && data.data.url) {
                 const imageUrl = data.data.url;
                 console.log('✅ Imagen subida exitosamente:', imageUrl);
+                console.log('🔗 URL de la imagen:', imageUrl);
+                console.log('🖼️ URL del thumbnail:', data.data.thumb?.url);
                 console.log('📏 Tamaño procesado:', data.data.size);
-                console.log('🔗 URL de vista:', data.data.display_url);
                 
-                this.showNotification('✅ Imagen subida correctamente a servidor público', 'success');
-                return imageUrl;
+                // Retornar la URL directa de la imagen
+                const directUrl = data.data.url;
+                this.showNotification('✅ Imagen subida correctamente a ImgBB', 'success');
+                return directUrl;
                 
             } else {
-                console.error('❌ Respuesta inesperada:', data);
+                console.error('❌ Respuesta inesperada de ImgBB:', data);
                 throw new Error(data.error?.message || 'Error desconocido de ImgBB');
             }
             
         } catch (error) {
-            console.error('❌ Error crítico subiendo imagen:', error);
+            console.error('❌ Error crítico subiendo imagen a ImgBB:', error);
             
-            // Intentar subir a servidor alternativo (placeholder)
-            if (error.message.includes('API Key') || error.message.includes('Límite')) {
-                this.showNotification(`⚠️ ${error.message}. Usando servidor alternativo.`, 'warning');
-                return this.uploadToPlaceholder(file);
-            } else {
-                this.showNotification(`⚠️ Error de conexión: ${error.message}. Usando imagen temporal.`, 'warning');
-                return this.convertToBase64(file);
-            }
+            // Usar servicio alternativo (Cloudinary demo)
+            this.showNotification(`⚠️ Error con ImgBB: ${error.message}. Usando servicio alternativo.`, 'warning');
+            return await this.uploadToCloudinary(file);
             
         } finally {
             this.isUploading = false;
@@ -406,25 +393,34 @@ class AdminPanel {
         }
     }
 
-    async uploadToPlaceholder(file) {
-        // Servicio alternativo gratuito
-        const placeholderUrl = 'https://api.cloudinary.com/v1_1/demo/image/upload';
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'ml_default');
-        
+    async uploadToCloudinary(file) {
         try {
-            const response = await fetch(placeholderUrl, {
+            console.log('🔄 Intentando subir a Cloudinary (demo)...');
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'ml_default');
+            
+            const response = await fetch('https://api.cloudinary.com/v1_1/demo/image/upload', {
                 method: 'POST',
                 body: formData
             });
             
             const data = await response.json();
-            return data.secure_url || `https://via.placeholder.com/600x400/667eea/ffffff?text=${encodeURIComponent('Felipe Sneakers')}`;
+            
+            if (data.secure_url) {
+                console.log('✅ Imagen subida a Cloudinary:', data.secure_url);
+                return data.secure_url;
+            } else {
+                throw new Error('No se pudo obtener URL de Cloudinary');
+            }
             
         } catch (error) {
-            console.log('🔄 Usando placeholder estático');
-            return `https://via.placeholder.com/600x400/667eea/ffffff?text=${encodeURIComponent('Felipe Sneakers')}`;
+            console.error('❌ Error con Cloudinary:', error);
+            
+            // Convertir a Base64 como último recurso
+            console.log('🔄 Convirtiendo imagen a Base64...');
+            return await this.convertToBase64(file);
         }
     }
 
@@ -432,7 +428,7 @@ class AdminPanel {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = (e) => {
-                console.log('🔄 Convertido a Base64 como temporal');
+                console.log('🔄 Imagen convertida a Base64');
                 resolve(e.target.result);
             };
             reader.onerror = () => {
@@ -475,16 +471,16 @@ class AdminPanel {
             submitBtn.innerHTML = '<i class="bx bx-loader-circle bx-spin"></i> Procesando...';
             submitBtn.disabled = true;
 
-            // Subir imagen
+            // Subir imagen a ImgBB
             const imageUrl = await this.uploadToImgBB(this.currentFile);
             
             // Determinar tipo de imagen
-            const isPublicImage = imageUrl.startsWith('http') && !imageUrl.startsWith('data:image/');
+            const isPublicImage = imageUrl.startsWith('https://');
             const isBase64 = imageUrl.startsWith('data:image/');
             
             console.log('🎯 Tipo de imagen:', 
-                isPublicImage ? 'Pública' : 
-                isBase64 ? 'Base64 (Temporal)' : 'Placeholder');
+                isPublicImage ? 'Pública (ImgBB/Cloudinary)' : 
+                isBase64 ? 'Base64 (Temporal)' : 'Desconocido');
 
             // Crear producto
             const product = {
@@ -495,7 +491,7 @@ class AdminPanel {
                     this.products.find(p => p.id === this.editingProductId)?.createdAt || new Date().toISOString() : 
                     new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
-                imageType: isPublicImage ? 'public' : (isBase64 ? 'base64' : 'placeholder'),
+                imageType: isPublicImage ? 'public' : (isBase64 ? 'base64' : 'unknown'),
                 imageStatus: isPublicImage ? 'uploaded' : 'temporary'
             };
 
@@ -520,17 +516,14 @@ class AdminPanel {
                 this.resetForm();
                 
                 if (isPublicImage) {
-                    this.showNotification(`✅ "${product.name}" agregado con imagen pública`, 'success');
+                    this.showNotification(`✅ "${product.name}" agregado con imagen pública (ImgBB)`, 'success');
                 } else if (isBase64) {
                     this.showNotification(`⚠️ "${product.name}" agregado con imagen temporal (solo visible localmente)`, 'warning');
                 } else {
-                    this.showNotification(`✅ "${product.name}" agregado con placeholder`, 'info');
+                    this.showNotification(`✅ "${product.name}" agregado correctamente`, 'info');
                 }
                 
                 this.editingProductId = null;
-                
-                // Track en analytics
-                this.trackProductAction(this.editingProductId ? 'update' : 'create', product);
             }
 
         } catch (error) {
@@ -541,7 +534,7 @@ class AdminPanel {
             // Restaurar botón
             const submitBtn = document.querySelector('#product-form button[type="submit"]');
             if (submitBtn) {
-                submitBtn.innerHTML = '<i class="bx bx-plus"></i> Agregar Producto';
+                submitBtn.innerHTML = originalText || '<i class="bx bx-plus"></i> Agregar Producto';
                 submitBtn.disabled = false;
             }
         }
@@ -606,7 +599,6 @@ class AdminPanel {
         
         // Mostrar imagen existente
         const preview = document.getElementById('image-preview');
-        const uploadArea = document.getElementById('upload-area');
         
         preview.innerHTML = `
             <img src="${product.image}" alt="Vista previa" style="max-width: 100%; max-height: 300px; border-radius: 8px;">
@@ -617,10 +609,6 @@ class AdminPanel {
                 }
             </div>
         `;
-        
-        uploadArea.classList.add('has-image');
-        this.currentImageBase64 = product.image;
-        this.currentFile = null; // Reset file al editar
         
         // Cambiar texto del botón
         const submitBtn = document.querySelector('#product-form button[type="submit"]');
@@ -640,9 +628,6 @@ class AdminPanel {
         });
         
         this.showNotification('✏️ Editando producto. Modifica los campos y guarda.', 'info');
-        
-        // Track edición
-        this.trackProductAction('edit', product);
     }
 
     deleteProduct(productId) {
@@ -653,9 +638,6 @@ class AdminPanel {
         }
 
         if (confirm(`¿Estás seguro de eliminar "${product.name}"?\nEsta acción no se puede deshacer.`)) {
-            // Track antes de eliminar
-            this.trackProductAction('delete', product);
-            
             this.products = this.products.filter(p => p.id !== productId);
             this.saveProducts();
             this.renderProducts();
@@ -673,14 +655,14 @@ class AdminPanel {
 
     previewImage(file) {
         const preview = document.getElementById('image-preview');
-        const uploadArea = document.getElementById('upload-area');
+        const uploadArea = document.querySelector('.upload-area');
         
         // Validaciones
         if (file.size > this.MAX_IMAGE_SIZE) {
             this.showNotification(`⚠️ La imagen es muy grande (${(file.size / 1024 / 1024).toFixed(2)} MB). Máximo 2MB`, 'error');
             document.getElementById('product-image').value = '';
             preview.innerHTML = '<span class="placeholder-text">Vista previa aparecerá aquí</span>';
-            uploadArea.classList.remove('has-image');
+            if (uploadArea) uploadArea.classList.remove('has-image');
             this.currentImageBase64 = null;
             this.currentFile = null;
             return;
@@ -690,7 +672,7 @@ class AdminPanel {
             this.showNotification('⚠️ El archivo debe ser una imagen (JPG, PNG, WebP)', 'error');
             document.getElementById('product-image').value = '';
             preview.innerHTML = '<span class="placeholder-text">Vista previa aparecerá aquí</span>';
-            uploadArea.classList.remove('has-image');
+            if (uploadArea) uploadArea.classList.remove('has-image');
             this.currentImageBase64 = null;
             this.currentFile = null;
             return;
@@ -720,14 +702,14 @@ class AdminPanel {
                 </div>
             `;
             
-            uploadArea.classList.add('has-image');
+            if (uploadArea) uploadArea.classList.add('has-image');
             this.showNotification('✅ Imagen cargada correctamente', 'success');
         };
         
         reader.onerror = () => {
             this.showNotification('❌ Error al cargar la imagen', 'error');
             preview.innerHTML = '<span class="placeholder-text">Error al cargar imagen</span>';
-            uploadArea.classList.remove('has-image');
+            if (uploadArea) uploadArea.classList.remove('has-image');
             this.currentImageBase64 = null;
             this.currentFile = null;
         };
@@ -781,7 +763,7 @@ class AdminPanel {
 
     createProductCard(product) {
         // Determinar tipo de imagen
-        const isPublicImage = product.image.startsWith('http') && !product.image.startsWith('data:image/');
+        const isPublicImage = product.image.startsWith('https://');
         const isBase64 = product.image.startsWith('data:image/');
         
         let imageStatus = '';
@@ -809,7 +791,7 @@ class AdminPanel {
                         alt="${product.name}" 
                         class="product-image"
                         loading="lazy"
-                        onerror="this.src='https://via.placeholder.com/400x300/667eea/ffffff?text=Imagen+no+cargada'"
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/667eea/ffffff?text=Imagen+no+disponible';"
                     >
                 </div>
                 <div class="product-info">
@@ -969,20 +951,16 @@ class AdminPanel {
     }
 
     // ============================================
-    // ESTADÍSTICAS MEJORADAS
+    // ESTADÍSTICAS
     // ============================================
 
     updateStats() {
         const totalProducts = this.products.length;
-        const publicImages = this.products.filter(p => p.image.startsWith('http') && !p.image.startsWith('data:image/')).length;
-        const localImages = this.products.filter(p => p.image.startsWith('data:image/')).length;
-        const placeholderImages = totalProducts - publicImages - localImages;
+        const publicImages = this.products.filter(p => p.image && p.image.startsWith('https://')).length;
+        const localImages = this.products.filter(p => p.image && p.image.startsWith('data:image/')).length;
         
         // Contar categorías únicas
         const uniqueCategories = [...new Set(this.products.map(p => p.category))].length;
-        
-        // Contar marcas únicas
-        const uniqueBrands = [...new Set(this.products.map(p => p.brand))].length;
         
         // Actualizar UI
         const updateElement = (id, value) => {
@@ -1005,16 +983,6 @@ class AdminPanel {
             `;
         }
         
-        // Log detallado
-        console.log('📊 ========== ESTADÍSTICAS ==========');
-        console.log(`   Total productos: ${totalProducts}`);
-        console.log(`   Imágenes públicas: ${publicImages} (${Math.round((publicImages/totalProducts)*100)}%)`);
-        console.log(`   Imágenes locales: ${localImages} (${Math.round((localImages/totalProducts)*100)}%)`);
-        console.log(`   Placeholders: ${placeholderImages}`);
-        console.log(`   Categorías activas: ${uniqueCategories}`);
-        console.log(`   Marcas: ${uniqueBrands}`);
-        console.log('=====================================');
-        
         // Mostrar advertencia si hay imágenes locales
         if (localImages > 0 && totalProducts > 0) {
             const percentage = Math.round((localImages/totalProducts)*100);
@@ -1023,7 +991,7 @@ class AdminPanel {
             }
         }
         
-        return { totalProducts, publicImages, localImages, uniqueCategories, uniqueBrands };
+        return { totalProducts, publicImages, localImages, uniqueCategories };
     }
 
     // ============================================
@@ -1116,42 +1084,7 @@ class AdminPanel {
     }
 
     // ============================================
-    // ANALYTICS Y TRACKING
-    // ============================================
-
-    trackProductAction(action, product) {
-        const analyticsData = {
-            action: action,
-            productId: product.id,
-            productName: product.name,
-            category: product.category,
-            timestamp: new Date().toISOString(),
-            imageType: product.image.startsWith('data:image/') ? 'local' : 'public'
-        };
-        
-        console.log('📈 Analytics:', analyticsData);
-        
-        // Guardar en localStorage para historial
-        try {
-            const history = JSON.parse(localStorage.getItem('adminActions') || '[]');
-            history.unshift({
-                ...analyticsData,
-                id: Date.now()
-            });
-            
-            // Mantener solo los últimos 100 registros
-            if (history.length > 100) {
-                history.pop();
-            }
-            
-            localStorage.setItem('adminActions', JSON.stringify(history));
-        } catch (error) {
-            console.error('❌ Error guardando analytics:', error);
-        }
-    }
-
-    // ============================================
-    // NOTIFICACIONES MEJORADAS
+    // NOTIFICACIONES
     // ============================================
 
     showNotification(message, type = 'success') {
@@ -1194,71 +1127,6 @@ class AdminPanel {
             notification.classList.remove('show');
         }
     }
-
-    // ============================================
-    // MIGRACIÓN DE IMÁGENES LOCALES
-    // ============================================
-
-    async migrateLocalImages() {
-        const localProducts = this.products.filter(p => p.image.startsWith('data:image/'));
-        
-        if (localProducts.length === 0) {
-            this.showNotification('✅ No hay imágenes locales para migrar', 'success');
-            return;
-        }
-
-        if (!confirm(`¿Migrar ${localProducts.length} imágenes locales a servidor público?\nEsto puede tomar unos minutos.`)) {
-            return;
-        }
-
-        this.showNotification(`🔄 Migrando ${localProducts.length} imágenes...`, 'info');
-        
-        let migrated = 0;
-        let failed = 0;
-        
-        for (const product of localProducts) {
-            try {
-                // Convertir Base64 a archivo
-                const response = await fetch(product.image);
-                const blob = await response.blob();
-                const file = new File([blob], `${product.name}.png`, { type: 'image/png' });
-                
-                // Subir a ImgBB
-                const newUrl = await this.uploadToImgBB(file);
-                
-                if (newUrl && !newUrl.startsWith('data:image/')) {
-                    product.image = newUrl;
-                    product.imageType = 'public';
-                    product.imageStatus = 'migrated';
-                    product.updatedAt = new Date().toISOString();
-                    migrated++;
-                    
-                    console.log(`✅ Migrado: ${product.name}`);
-                    this.showNotification(`🔄 Migrando... (${migrated}/${localProducts.length})`, 'info');
-                } else {
-                    failed++;
-                    console.log(`❌ Falló migración: ${product.name}`);
-                }
-                
-                // Pequeña pausa para no saturar
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-            } catch (error) {
-                failed++;
-                console.error(`❌ Error migrando ${product.name}:`, error);
-            }
-        }
-        
-        // Guardar cambios
-        this.saveProducts();
-        this.renderProducts();
-        
-        // Mostrar resultados
-        const message = `✅ Migración completada: ${migrated} exitosas, ${failed} fallidas`;
-        this.showNotification(message, migrated > 0 ? 'success' : 'warning');
-        
-        console.log(`🎉 Migración finalizada: ${migrated} exitosas, ${failed} fallidas`);
-    }
 }
 
 // ============================================
@@ -1276,22 +1144,11 @@ document.addEventListener('DOMContentLoaded', () => {
         admin = new AdminPanel();
         window.admin = admin; // Hacer disponible globalmente
         
-        // Exponer función de migración
-        window.migrateImages = () => admin.migrateLocalImages();
-        
         console.log('✅ Panel de administración inicializado correctamente');
         
     } catch (error) {
         console.error('❌ Error crítico inicializando panel:', error);
         alert('Error crítico al cargar el panel. Por favor, recarga la página.');
-    }
-});
-
-// Manejar recarga de página
-window.addEventListener('beforeunload', (e) => {
-    if (admin && admin.products.length > 0) {
-        // Preguntar si hay cambios sin guardar
-        // Nota: localStorage se guarda automáticamente
     }
 });
 
@@ -1307,9 +1164,23 @@ window.debugAdmin = {
             location.reload();
         }
     },
-    exportJSON: () => {
-        const data = admin?.products || [];
-        console.log(JSON.stringify(data, null, 2));
-        return data;
+    testImgBB: async () => {
+        // Probar subida simple a ImgBB
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const url = await admin.uploadToImgBB(file);
+                    console.log('✅ URL obtenida:', url);
+                    window.open(url, '_blank');
+                } catch (error) {
+                    console.error('❌ Error:', error);
+                }
+            }
+        };
+        fileInput.click();
     }
 };
