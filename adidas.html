@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+    <title>Colección Adidas - Felipe Sneakers</title>
+</head>
+<body>
+    <!-- Header -->
+    <header class="l-header" id="header">
+        <nav class="nav bd-grid">
+            <div class="nav__toggle" id="nav-toggle">
+                <i class="bx bx-menu"></i>
+            </div>
+            <a href="index.html" class="nav__logo">Felipe Sneakers</a>
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Inicio</a></li>
+                    <li class="nav__item"><a href="index.html#featured" class="nav__link">Destacados</a></li>
+                    <li class="nav__item"><a href="mujeres.html" class="nav__link">Mujeres</a></li>
+                    <li class="nav__item"><a href="hombres.html" class="nav__link">Hombres</a></li>
+                    <li class="nav__item"><a href="nike.html" class="nav__link">Nike</a></li>
+                    <li class="nav__item"><a href="adidas.html" class="nav__link active">Adidas</a></li>
+                </ul>
+            </div>
+            <div class="nav__shop">
+                <i class="bx bx-shopping-bag"></i>
+                <span class="nav__cart-count">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="l-main">
+        <!--===== COLECCIÓN ADIDAS =====-->
+        <section class="featured section" id="adidas">
+            <h2 class="section-title">COLECCIÓN ADIDAS</h2>
+            <div class="featured__container bd-grid" id="adidas-products">
+                <!-- Los productos Adidas se cargan dinámicamente -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer section">
+        <div class="footer__container bd-grid">
+            <div class="footer__box">
+                <h3 class="footer__title">Felipe Sneakers</h3>
+                <p class="footer__description">Tu tienda de confianza para las mejores zapatillas deportivas y casuales en Colombia</p>
+            </div>
+
+            <div class="footer__box">
+                <h3 class="footer__title">COLECCIONES</h3>
+                <ul>
+                    <li><a href="hombres.html" class="footer__link">Hombres</a></li>
+                    <li><a href="mujeres.html" class="footer__link">Mujeres</a></li>
+                    <li><a href="nike.html" class="footer__link">Nike</a></li>
+                    <li><a href="adidas.html" class="footer__link">Adidas</a></li>
+                </ul>
+            </div>
+
+            <div class="footer__box">
+                <h3 class="footer__title">CONTACTO</h3>
+                <ul>
+                    <li><a href="https://wa.me/573205769399" class="footer__link" target="_blank"><i class='bx bxl-whatsapp'></i> +57 320 576 9399</a></li>
+                    <li><a href="tel:+573205769399" class="footer__link"><i class='bx bx-phone'></i> Llamar ahora</a></li>
+                    <li><a href="mailto:ventas@felipesneakers.com" class="footer__link"><i class='bx bx-envelope'></i> ventas@felipesneakers.com</a></li>
+                </ul>
+            </div>
+
+            <div class="footer__box">
+                <h3 class="footer__title">SÍGUENOS</h3>
+                <div class="footer__socials">
+                    <a href="https://facebook.com/felipesneakers" class="footer__social" target="_blank"><i class="bx bxl-facebook"></i></a>
+                    <a href="https://instagram.com/felipesneakers" class="footer__social" target="_blank"><i class="bx bxl-instagram"></i></a>
+                    <a href="https://tiktok.com/@felipesneakers" class="footer__social" target="_blank"><i class="bx bxl-tiktok"></i></a>
+                    <a href="https://wa.me/573205769399" class="footer__social" target="_blank"><i class="bx bxl-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <p class="footer__copy">&#169; 2024 Felipe Sneakers. Todos los derechos reservados | Cali, Colombia</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Cargar productos Adidas al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductsByBrand('adidas', 'adidas-products');
+        });
+    </script>
+</body>
+</html>
