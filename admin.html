@@ -6,26 +6,38 @@
     <link rel="stylesheet" href="styles/admin.css" />
     <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
     <title>Panel de Administración - Felipe Sneakers</title>
+    <style>
+        /* Estilos inline para carga inmediata */
+        .preload {
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <div class="admin-container">
         <!-- Login Screen -->
         <div class="login-screen" id="login-screen">
-            <div class="login-container">
+            <div class="login-container preload">
                 <div class="login-header">
                     <h1><i class='bx bx-lock-alt'></i> Acceso Administrativo</h1>
-                    <p>Felipe Sneakers - Panel de Control</p>
+                    <p class="text-muted">Felipe Sneakers - Panel de Control</p>
                 </div>
                 <form class="login-form" id="login-form">
                     <div class="form-group">
                         <label for="admin-password">Contraseña de Administrador</label>
-                        <input type="password" id="admin-password" required placeholder="Ingresa la contraseña">
+                        <input type="password" id="admin-password" required 
+                               placeholder="Ingresa la contraseña"
+                               autocomplete="current-password">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-large">
+                    <button type="submit" class="btn btn-primary btn-large mt-2">
                         <i class='bx bx-log-in'></i> Acceder al Panel
                     </button>
                 </form>
-                <div class="login-footer">
+                <div class="login-footer mt-3">
                     <a href="index.html" class="back-link">
                         <i class='bx bx-arrow-back'></i> Volver a la Tienda
                     </a>
@@ -38,19 +50,22 @@
             <!-- Header del Admin -->
             <header class="admin-header">
                 <div class="admin-nav">
-                    <a href="index.html" class="admin-logo">
+                    <a href="index.html" class="admin-logo" title="Volver al catálogo principal">
                         <i class='bx bx-arrow-back'></i>
-                        Volver a la Tienda
+                        <span>Volver a la Tienda</span>
                     </a>
                     <h1>Panel de Administración</h1>
                     <div class="admin-actions">
-                        <button class="btn btn-secondary" id="export-btn">
+                        <button class="btn btn-secondary" id="export-btn" 
+                                title="Exportar productos a archivo JSON">
                             <i class='bx bx-download'></i> Exportar
                         </button>
-                        <button class="btn btn-primary" id="save-btn">
+                        <button class="btn btn-primary" id="save-btn"
+                                title="Guardar todos los cambios">
                             <i class='bx bx-save'></i> Guardar Cambios
                         </button>
-                        <button class="btn btn-danger" id="logout-btn">
+                        <button class="btn btn-danger" id="logout-btn"
+                                title="Cerrar sesión del panel">
                             <i class='bx bx-log-out'></i> Cerrar Sesión
                         </button>
                     </div>
@@ -59,128 +74,283 @@
 
             <main class="admin-main">
                 <!-- Sección para agregar nuevo producto -->
-                <section class="admin-section">
+                <section class="admin-section preload">
                     <h2><i class='bx bx-plus'></i> Agregar Nuevo Producto</h2>
                     <form class="product-form" id="product-form">
                         <div class="form-grid">
+                            <!-- Nombre del Producto -->
                             <div class="form-group">
-                                <label for="product-name">Nombre del Producto</label>
-                                <input type="text" id="product-name" required placeholder="Ej: Adidas Ultraboost 22">
+                                <label for="product-name">
+                                    <i class='bx bx-rename'></i> Nombre del Producto
+                                </label>
+                                <input type="text" id="product-name" required 
+                                       placeholder="Ej: Adidas Ultraboost 22"
+                                       autocomplete="off">
+                                <small class="text-muted">Nombre completo del producto para el catálogo</small>
                             </div>
 
+                            <!-- Categoría -->
                             <div class="form-group">
-                                <label for="product-category">Categoría</label>
+                                <label for="product-category">
+                                    <i class='bx bx-category'></i> Categoría
+                                </label>
                                 <select id="product-category" required>
                                     <option value="">Seleccionar categoría</option>
-                                    <option value="destacados">Destacados</option>
-                                    <option value="hombres">Hombres</option>
-                                    <option value="mujeres">Mujeres</option>
-                                    <option value="nike">Nike</option>
-                                    <option value="adidas">Adidas</option>
+                                    <option value="destacados">⭐ Destacados</option>
+                                    <option value="hombres">👨 Hombres</option>
+                                    <option value="mujeres">👩 Mujeres</option>
+                                    <option value="nike">✓ Nike</option>
+                                    <option value="adidas">✓ Adidas</option>
                                 </select>
+                                <small class="text-muted">Determina en qué sección aparecerá</small>
                             </div>
 
+                            <!-- Marca -->
                             <div class="form-group">
-                                <label for="product-brand">Marca</label>
+                                <label for="product-brand">
+                                    <i class='bx bx-purchase-tag'></i> Marca
+                                </label>
                                 <select id="product-brand" required>
                                     <option value="">Seleccionar marca</option>
                                     <option value="nike">Nike</option>
                                     <option value="adidas">Adidas</option>
-                                    <option value="otra">Otra</option>
+                                    <option value="otra">Otra marca</option>
                                 </select>
+                                <small class="text-muted">Marca principal del producto</small>
                             </div>
 
+                            <!-- Etiqueta -->
                             <div class="form-group">
-                                <label for="product-badge">Etiqueta</label>
+                                <label for="product-badge">
+                                    <i class='bx bx-label'></i> Etiqueta
+                                </label>
                                 <select id="product-badge" required>
-                                    <option value="Nuevo">Nuevo</option>
-                                    <option value="Oferta">Oferta</option>
-                                    <option value="Popular">Popular</option>
-                                    <option value="Limitado">Edición Limitada</option>
-                                    <option value="Exclusivo">Exclusivo</option>
+                                    <option value="Nuevo">🆕 Nuevo</option>
+                                    <option value="Oferta">🏷️ Oferta</option>
+                                    <option value="Popular">🔥 Popular</option>
+                                    <option value="Limitado">🎯 Edición Limitada</option>
+                                    <option value="Exclusivo">👑 Exclusivo</option>
                                 </select>
+                                <small class="text-muted">Etiqueta visual para destacar</small>
                             </div>
 
+                            <!-- Descripción -->
                             <div class="form-group full-width">
-                                <label for="product-description">Descripción del Producto</label>
-                                <textarea id="product-description" placeholder="Describe las características principales del producto..." rows="3"></textarea>
-                                <small style="color: #64748b; font-size: 0.8rem;">Esta descripción se mostrará en el catálogo</small>
+                                <label for="product-description">
+                                    <i class='bx bx-text'></i> Descripción del Producto
+                                </label>
+                                <textarea id="product-description" 
+                                          placeholder="Describe las características principales, materiales, tecnología, etc..."
+                                          rows="4"></textarea>
+                                <small class="text-muted">Esta descripción se mostrará en el catálogo para los clientes</small>
                             </div>
 
+                            <!-- Tallas -->
                             <div class="form-group">
-                                <label for="product-sizes">Tallas Disponibles</label>
-                                <input type="text" id="product-sizes" placeholder="Ej: 38, 39, 40, 41, 42" />
-                                <small style="color: #64748b; font-size: 0.8rem;">Separa las tallas con comas</small>
+                                <label for="product-sizes">
+                                    <i class='bx bx-ruler'></i> Tallas Disponibles
+                                </label>
+                                <input type="text" id="product-sizes" 
+                                       placeholder="Ej: 38, 39, 40, 41, 42, 43"
+                                       autocomplete="off" />
+                                <small class="text-muted">Separa las tallas con comas</small>
                             </div>
 
+                            <!-- Mensaje WhatsApp -->
                             <div class="form-group full-width">
-                                <label for="product-message">Mensaje de WhatsApp</label>
-                                <textarea id="product-message" required placeholder="Mensaje que se enviará por WhatsApp cuando alguien haga clic en consultar disponibilidad" rows="3"></textarea>
-                                <small style="color: #64748b; font-size: 0.8rem;">Este mensaje se genera automáticamente al escribir el nombre del producto</small>
+                                <label for="product-message">
+                                    <i class='bx bxl-whatsapp'></i> Mensaje de WhatsApp
+                                </label>
+                                <textarea id="product-message" required 
+                                          placeholder="Este mensaje se enviará automáticamente cuando un cliente haga clic en 'Consultar Disponibilidad'..."
+                                          rows="3"></textarea>
+                                <small class="text-muted">Se genera automáticamente al escribir el nombre del producto</small>
                             </div>
 
+                            <!-- Imagen del Producto -->
                             <div class="form-group full-width">
-                                <label for="product-image">Imagen del Producto</label>
+                                <label for="product-image">
+                                    <i class='bx bx-image'></i> Imagen del Producto
+                                </label>
                                 <div class="image-upload">
-                                    <input type="file" id="product-image" accept="image/*" required>
-                                    <label for="product-image" class="upload-btn">
-                                        <i class='bx bx-cloud-upload'></i>
-                                        <span>Seleccionar Imagen (Máx. 2MB)</span>
+                                    <input type="file" id="product-image" accept="image/*" required
+                                           data-tooltip="Formatos: JPG, PNG, WebP. Máx. 2MB">
+                                    
+                                    <label for="product-image" class="upload-area">
+                                        <div class="upload-btn">
+                                            <i class='bx bx-cloud-upload'></i>
+                                            <span>Seleccionar Imagen</span>
+                                        </div>
+                                        <p class="mt-1 text-muted">
+                                            Arrastra y suelta o haz clic para subir
+                                        </p>
+                                        <p class="text-xs text-muted mt-1">
+                                            Formatos: JPG, PNG, WebP • Máximo: 2MB
+                                        </p>
                                     </label>
+                                    
                                     <div class="image-preview" id="image-preview">
-                                        <span>Vista previa aparecerá aquí</span>
+                                        <span class="placeholder-text">Vista previa aparecerá aquí</span>
+                                        <div class="image-loading" style="display: none;">
+                                            <i class='bx bx-loader-circle bx-spin'></i>
+                                            <span>Subiendo imagen a servidor...</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <small class="text-muted mt-1">
+                                    <i class='bx bx-info-circle'></i> Las imágenes se suben automáticamente a un servidor público
+                                </small>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success btn-large">
-                            <i class='bx bx-plus'></i> Agregar Producto
-                        </button>
+                        <div class="form-actions mt-3">
+                            <button type="submit" class="btn btn-success btn-large">
+                                <i class='bx bx-check'></i> Agregar Producto
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="reset-form-btn">
+                                <i class='bx bx-reset'></i> Limpiar Formulario
+                            </button>
+                        </div>
                     </form>
                 </section>
 
                 <!-- Lista de productos existentes -->
-                <section class="admin-section">
-                    <h2><i class='bx bx-grid-alt'></i> Productos Existentes</h2>
+                <section class="admin-section preload">
+                    <div class="section-header">
+                        <h2><i class='bx bx-grid-alt'></i> Productos Existentes</h2>
+                        <div class="stats-badge" id="products-count">
+                            <i class='bx bx-package'></i>
+                            <span>0 productos</span>
+                        </div>
+                    </div>
+                    
                     <div class="products-grid" id="products-grid">
                         <!-- Los productos se cargan dinámicamente -->
                         <div class="empty-state full-width">
-                            <i class='bx bx-package'></i>
+                            <div class="empty-icon">
+                                <i class='bx bx-package'></i>
+                            </div>
                             <h3>No hay productos</h3>
-                            <p>Agrega tu primer producto usando el formulario de arriba.</p>
+                            <p class="text-muted">Agrega tu primer producto usando el formulario de arriba.</p>
+                            <button class="btn btn-primary mt-2" onclick="document.getElementById('product-form').scrollIntoView()">
+                                <i class='bx bx-plus'></i> Agregar Primer Producto
+                            </button>
                         </div>
                     </div>
                 </section>
 
                 <!-- Gestión del producto destacado en home -->
-                <section class="admin-section">
+                <section class="admin-section preload">
                     <h2><i class='bx bx-home'></i> Producto Destacado en Inicio</h2>
+                    
                     <div class="featured-management">
                         <div class="form-group">
-                            <label for="featured-product">Seleccionar Producto para la Portada</label>
-                            <select id="featured-product">
+                            <label for="featured-product">
+                                <i class='bx bx-star'></i> Seleccionar Producto para la Portada
+                            </label>
+                            <select id="featured-product" class="featured-select">
                                 <option value="">Seleccionar producto destacado</option>
                                 <option value="" disabled>No hay productos en "Destacados"</option>
                             </select>
+                            <small class="text-muted">
+                                Este producto aparecerá destacado en la página principal
+                            </small>
                         </div>
                         <button class="btn btn-primary" id="update-featured-btn">
-                            <i class='bx bx-star'></i> Actualizar Portada
+                            <i class='bx bx-check'></i> Actualizar Portada
                         </button>
                     </div>
-                    <p style="color: #64748b; font-size: 0.9rem; margin-top: 1rem;">
-                        <i class='bx bx-info-circle'></i> Solo los productos en la categoría "Destacados" aparecerán en esta lista.
-                    </p>
+                    
+                    <div class="info-box mt-3">
+                        <i class='bx bx-info-circle'></i>
+                        <div>
+                            <p class="text-muted mb-0">
+                                <strong>Importante:</strong> Solo los productos en la categoría "Destacados" 
+                                aparecerán en esta lista. Para destacar un producto, primero agrégalo o 
+                                edítalo y selecciona la categoría "Destacados".
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Panel de estadísticas -->
+                <section class="admin-section preload">
+                    <h2><i class='bx bx-stats'></i> Estadísticas</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-package'></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-products">0</h3>
+                                <p class="text-muted">Productos Totales</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-image'></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="public-images">0</h3>
+                                <p class="text-muted">Imágenes Públicas</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-category'></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="categories-count">0</h3>
+                                <p class="text-muted">Categorías Activas</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class='bx bx-check-shield'></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="local-images">0</h3>
+                                <p class="text-muted">Imágenes Locales</p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </main>
 
             <!-- Notificaciones -->
             <div class="notification" id="notification">
-                <span id="notification-message"></span>
-                <button class="notification-close" id="notification-close">
+                <div class="notification-content">
+                    <i class='bx bx-info-circle notification-icon'></i>
+                    <span id="notification-message"></span>
+                </div>
+                <button class="notification-close" id="notification-close" aria-label="Cerrar notificación">
                     <i class='bx bx-x'></i>
                 </button>
             </div>
+
+            <!-- Footer del Admin -->
+            <footer class="admin-footer">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4><i class='bx bx-shield'></i> Panel Seguro</h4>
+                        <p class="text-muted">Sesión activa: <span id="session-time">00:00</span></p>
+                    </div>
+                    <div class="footer-section">
+                        <h4><i class='bx bx-cloud'></i> Servicios</h4>
+                        <p class="text-muted">Almacenamiento: ImgBB</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4><i class='bx bx-code'></i> Sistema</h4>
+                        <p class="text-muted">v2.0 • Felipe Sneakers</p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p class="text-muted">
+                        &copy; 2025 Felipe Sneakers • Panel de Administración • 
+                        <a href="javascript:void(0)" id="clear-cache" class="text-link">Limpiar caché</a>
+                    </p>
+                </div>
+            </footer>
         </div>
     </div>
 
